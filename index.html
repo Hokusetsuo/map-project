@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>サポ旅マップ</title>
+  <style>
+    body { margin: 0; }
+    #map { height: 100vh; width: 100%; }
+  </style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+<script>
+   const firebaseConfig = {
+     apiKey: "AIzaSyCyzwwPiCcUCICxv6kcx7ZlaNkMa46hcVA",
+     authDomain: "japan-football-supporters-hub.firebaseapp.com",
+     projectId: "japan-football-supporters-hub",
+     storageBucket: "japan-football-supporters-hub.firebasestorage.app",
+     messagingSenderId: "607581916231",
+     appId: "1:607581916231:web:d857fe57f315dea46db562"
+   };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  let map;
+
+  function loadShops() {
+    db.collection("shops").get().then(snapshot => {
+      console.log("取得件数:", snapshot.size);
+
+      snapshot.forEach(doc => {
+        const shop = doc.data();
+
+const iconColor = shop.away
+  ? "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
+  : "http://maps.google.com/mapfiles/ms/icons/blue-dot.png";
+
+const marker = new google.maps.Marker({
+  position: {
+    lat: Number(shop.lat),
+    lng: Number(shop.lng)
+  },
+  map: map,
+  title: shop.name,
+  icon: iconColor
+});
+
+const infoWindow = new google.maps.InfoWindow({
+  content: `
+    <strong>${shop.name}</strong><br>
+    応援クラブ: ${shop.team}<br>
+    アウェイ歓迎: ${shop.away ? "あり" : "なし"}<br>
+    ${shop.note || ""}
+  `
+});
+        marker.addListener("click", () => {
+          infoWindow.open(map, marker);
+        });
+      });
+    });
+  }
+
+  // 🔥 ここが重要
+  window.initMap = function () {
+    console.log("地図初期化OK");
+
+    map = new google.maps.Map(document.getElementById("map"), {
+      center: { lat: 34.7284, lng: 135.4814 },
+      zoom: 12,
+    });
+
+    loadShops();
+  };
+</script>
+
+<script async
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDq01peBIq6PC5ESeSG5t2CipVBUCC1WF4&callback=initMap">
+</script>
+
+</body>
+</html>
