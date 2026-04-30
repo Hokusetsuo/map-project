@@ -94,10 +94,10 @@ const marker = new google.maps.Marker({
 
 const infoWindow = new google.maps.InfoWindow({
   content:
-  "<strong>" + shop.name + "</strong><br>" +
-  "応援クラブ: " + shop.team + "<br>" +
-  "アウェイ歓迎: " + (shop.away ? "あり" : "なし") + "<br>" +
-  (shop.note || "")
+    "<strong>" + shop.name + "</strong><br>" +
+    "応援クラブ: " + shop.team + "<br>" +
+    "アウェイ歓迎: " + (shop.away ? "あり" : "なし") + "<br>" +
+    (shop.note || "")
 });
         marker.addListener("click", () => {
           infoWindow.open(map, marker);
