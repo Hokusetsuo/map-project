@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>サポ旅マップ</title>
+  <title>サポごはんマップ</title>
   <style>
     body { margin: 0; }
     #map { height: 100vh; width: 100%; }
@@ -143,6 +143,7 @@ function getDistance(lat1, lng1, lat2, lng2) {
     });
 
 if (!snapshot.empty) {
+console.log("bounds:", bounds);
   map.fitBounds(bounds);
 
   google.maps.event.addListenerOnce(map, 'bounds_changed', function() {
