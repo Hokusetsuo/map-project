@@ -122,7 +122,10 @@ const marker = new google.maps.Marker({
 });
   
 bounds.extend(marker.getPosition());
-  map.fitBounds(bounds);
+});
+map.fitBounds(bounds); // ←ここ
+});
+}
 const googleMapLink =
   "https://www.google.com/maps?q=" + shop.lat + "," + shop.lng;
 
