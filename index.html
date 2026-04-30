@@ -160,7 +160,22 @@ window.initMap = function () {
     center: { lat: 34.7284, lng: 135.4814 },
     zoom: 16,
   });
+const lat = Number(shop.lat);
+const lng = Number(shop.lng);
 
+if (isNaN(lat) || isNaN(lng)) return;
+
+// 👇追加（3km以内だけ）
+if (userLocation) {
+  const distance = getDistance(
+    userLocation.lat,
+    userLocation.lng,
+    lat,
+    lng
+  );
+
+  if (distance > 3) return;
+}
   loadShops();
 };
 </script>
