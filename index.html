@@ -9,6 +9,10 @@
   </style>
 </head>
 <body>
+  
+<div style="position:absolute; top:60px; left:10px; z-index:1;">
+  <button onclick="moveToCurrentLocation()">現在地</button>
+</div>
 
 <div id="map"></div>
 
@@ -16,6 +20,37 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
 <script>
+
+  function moveToCurrentLocation() {
+  if (!navigator.geolocation) {
+    alert("位置情報が使えません");
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    function(position) {
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
+
+      const currentPos = { lat: lat, lng: lng };
+
+      // 地図を移動
+      map.setCenter(currentPos);
+      map.setZoom(14);
+
+      // 現在地マーカー
+      new google.maps.Marker({
+        position: currentPos,
+        map: map,
+        title: "現在地",
+        icon: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png"
+      });
+    },
+    function() {
+      alert("位置情報の取得に失敗しました");
+    }
+  );
+}
    const firebaseConfig = {
      apiKey: "AIzaSyCyzwwPiCcUCICxv6kcx7ZlaNkMa46hcVA",
      authDomain: "japan-football-supporters-hub.firebaseapp.com",
