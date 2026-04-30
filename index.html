@@ -92,12 +92,16 @@ const marker = new google.maps.Marker({
   icon: iconColor
 });
 
+const googleMapLink =
+  "https://www.google.com/maps?q=" + shop.lat + "," + shop.lng;
+
 const infoWindow = new google.maps.InfoWindow({
   content:
     "<strong>" + shop.name + "</strong><br>" +
     "応援クラブ: " + shop.team + "<br>" +
     "アウェイ歓迎: " + (shop.away ? "あり" : "なし") + "<br>" +
-    (shop.note || "")
+    (shop.note || "") + "<br>" +
+    "<a href='" + googleMapLink + "' target='_blank'>Googleマップで開く</a>"
 });
         marker.addListener("click", () => {
           infoWindow.open(map, marker);
