@@ -34,12 +34,16 @@
 
       const currentPos = { lat: lat, lng: lng };
 
-      // 地図を移動
       map.setCenter(currentPos);
       map.setZoom(14);
 
-      // 現在地マーカー
-      new google.maps.Marker({
+      // 既存の現在地マーカー削除
+      if (currentMarker) {
+        currentMarker.setMap(null);
+      }
+
+      // 新しい現在地マーカー
+      currentMarker = new google.maps.Marker({
         position: currentPos,
         map: map,
         title: "現在地",
@@ -65,6 +69,8 @@
 
   let map;
 
+  let currentMarker = null;
+  
   function loadShops() {
     db.collection("shops").get().then(snapshot => {
       console.log("取得件数:", snapshot.size);
@@ -87,11 +93,11 @@ const marker = new google.maps.Marker({
 });
 
 const infoWindow = new google.maps.InfoWindow({
-  content: `
-    <strong>${shop.name}</strong><br>
-    応援クラブ: ${shop.team}<br>
-    アウェイ歓迎: ${shop.away ? "あり" : "なし"}<br>
-    ${shop.note || ""}
+  content:
+  "<strong>" + shop.name + "</strong><br>" +
+  "応援クラブ: " + shop.team + "<br>" +
+  "アウェイ歓迎: " + (shop.away ? "あり" : "なし") + "<br>" +
+  (shop.note || "")
   `
 });
         marker.addListener("click", () => {
