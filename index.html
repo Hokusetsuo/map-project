@@ -107,22 +107,7 @@ function getDistance(lat1, lng1, lat2, lng2) {
         );
         distanceText = "距離: " + distance.toFixed(2) + " km<br>";
       }
-    const lat = Number(shop.lat);
-    const lng = Number(shop.lng);
 
-    if (isNaN(lat) || isNaN(lng)) return;
-
-    // 👇追加（3km以内だけ）
-    if (userLocation) {
-      const distance = getDistance(
-        userLocation.lat,
-        userLocation.lng,
-        lat,
-        lng
-      );
-
-      if (distance > 3) return;
-  
       const iconColor = shop.away
         ? "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
         : "http://maps.google.com/mapfiles/ms/icons/blue-dot.png";
@@ -175,7 +160,21 @@ window.initMap = function () {
     center: { lat: 34.7284, lng: 135.4814 },
     zoom: 16,
   });
+const lat = Number(shop.lat);
+const lng = Number(shop.lng);
 
+if (isNaN(lat) || isNaN(lng)) return;
+
+// 👇追加（3km以内だけ）
+if (userLocation) {
+  const distance = getDistance(
+    userLocation.lat,
+    userLocation.lng,
+    lat,
+    lng
+  );
+
+  if (distance > 3) return;
 }
   loadShops();
 };
