@@ -90,7 +90,8 @@ function getDistance(lat1, lng1, lat2, lng2) {
   function loadShops() {
     db.collection("shops").get().then(snapshot => {
       console.log("取得件数:", snapshot.size);
-
+const bounds = new google.maps.LatLngBounds();
+      
 snapshot.forEach(doc => {
   const shop = doc.data();
 
@@ -119,7 +120,9 @@ const marker = new google.maps.Marker({
   title: shop.name,
   icon: iconColor
 });
-
+  
+bounds.extend(marker.getPosition());
+  map.fitBounds(bounds);
 const googleMapLink =
   "https://www.google.com/maps?q=" + shop.lat + "," + shop.lng;
 
