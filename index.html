@@ -82,6 +82,13 @@ function getDistance(lat1, lng1, lat2, lng2) {
 
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
+
+  const isMobile = window.innerWidth < 600;
+  
+  map = new google.maps.Map(document.getElementById("map"), {
+   center: { lat: 34.7284, lng: 135.4814 },
+   zoom: isMobile ? 15 : 14,
+  });
   
   let map;
   let userLocation = null;
