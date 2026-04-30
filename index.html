@@ -143,6 +143,14 @@ function getDistance(lat1, lng1, lat2, lng2) {
     });
 
     map.fitBounds(bounds);
+    google.maps.event.addListenerOnce(map, 'bounds_changed', function() {
+  if (map.getZoom() > 14) {
+    map.setZoom(14);
+  }
+      if (!snapshot.empty) {
+  map.fitBounds(bounds);
+}
+});
   });
 }
 window.initMap = function () {
