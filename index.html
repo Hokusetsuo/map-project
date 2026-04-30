@@ -91,15 +91,7 @@ const marker = new google.maps.Marker({
   title: shop.name,
   icon: iconColor
 });
-        
-const googleMapLink = "https://www.google.com/maps?q=" + shop.lat + "," + shop.lng;
 
-const infoWindow = new google.maps.InfoWindow({
-  content:
-    "<strong>" + shop.name + "</strong><br>" +
-    "🏟 " + shop.team + "<br>" +
-    "<a href='" + googleMapLink + "' target='_blank'>地図アプリで開く</a>"
-});
 const infoWindow = new google.maps.InfoWindow({
   content:
   "<strong>" + shop.name + "</strong><br>" +
