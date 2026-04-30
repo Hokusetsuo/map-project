@@ -143,7 +143,7 @@ function getDistance(lat1, lng1, lat2, lng2) {
     });
     
 if (!snapshot.empty) {
-  map.fitBounds(bounds);
+  //map.fitBounds(bounds);
 
   google.maps.event.addListenerOnce(map, 'bounds_changed', function() {
     if (map.getZoom() > 14) {
