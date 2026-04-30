@@ -98,7 +98,6 @@ const infoWindow = new google.maps.InfoWindow({
   "応援クラブ: " + shop.team + "<br>" +
   "アウェイ歓迎: " + (shop.away ? "あり" : "なし") + "<br>" +
   (shop.note || "")
-  `
 });
         marker.addListener("click", () => {
           infoWindow.open(map, marker);
