@@ -222,14 +222,18 @@
         const infoWindow = new google.maps.InfoWindow({
 
           content:
-            "<div style='font-size:16px; line-height:1.6'>" +
-            "<strong style='font-size:18px'>" + shop.name + "</strong><br>" +
+            "<strong>" + shop.name + "</strong><br>" +
             "応援クラブ: " + shop.team + "<br>" +
             distanceText +
-            "アウェイ歓迎: " + (shop.away ? "あり" : "なし") + "<br>" +
-            (shop.note || "") + "<br><br>" +
-            "<a href='" + googleMapLink + "' target='_blank'>Googleマップで開く</a>" +
-            "</div>"
+            "アウェイ歓迎: " +
+            (shop.away ? "あり" : "なし") +
+            "<br>" +
+            (shop.note || "") +
+            "<br>" +
+            "<a href='" +
+            googleMapLink +
+            "' target='_blank'>Googleマップで開く</a>"
+
         });
 
         // クリックイベント
