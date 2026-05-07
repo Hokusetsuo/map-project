@@ -9,166 +9,186 @@
   </style>
 </head>
 <body>
-  
-<div style="position:absolute; top:60px; left:10px; z-index:1;">
-  <button onclick="moveToCurrentLocation()">現在地</button>
-</div>
 
-<div id="map"></div>
+  <!-- 現在地ボタン -->
+  <div style="position:absolute; top:60px; left:10px; z-index:1;">
+    <button onclick="moveToCurrentLocation()">現在地</button>
+  </div>
 
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <!-- 地図 -->
+  <div id="map"></div>
 
-<script>
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
-  function moveToCurrentLocation() {
-  if (!navigator.geolocation) {
-    alert("位置情報が使えません");
-    return;
-  }
-
-  navigator.geolocation.getCurrentPosition(
-    function(position) {
-      const lat = position.coords.latitude;
-      const lng = position.coords.longitude;
-
-      const currentPos = { lat: lat, lng: lng };
-　　　
-      map.setCenter(currentPos);
-      map.setZoom(14);
-
-      // 既存の現在地マーカー削除
-      if (currentMarker) {
-        currentMarker.setMap(null);
+  <script>
+    /* ------------------------------
+       現在地へ移動
+    ------------------------------ */
+    function moveToCurrentLocation() {
+      if (!navigator.geolocation) {
+        alert("位置情報が使えません");
+        return;
       }
 
-      // 新しい現在地マーカー
-      currentMarker = new google.maps.Marker({
-        position: currentPos,
-        map: map,
-        title: "現在地",
-        icon: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png"
-      });
-    },
-    function() {
-      alert("位置情報の取得に失敗しました");
-    }
-  );
-}
+      navigator.geolocation.getCurrentPosition(
+        function (position) {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          const currentPos = { lat, lng };
 
-function getDistance(lat1, lng1, lat2, lng2) {
-  const R = 6371; // km
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLng = (lng2 - lng1) * Math.PI / 180;
+          map.setCenter(currentPos);
+          map.setZoom(14);
 
-  const a =
-    Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(lat1 * Math.PI/180) *
-    Math.cos(lat2 * Math.PI/180) *
-    Math.sin(dLng/2) * Math.sin(dLng/2);
+          // 既存の現在地マーカー削除
+          if (currentMarker) {
+            currentMarker.setMap(null);
+          }
 
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-  return R * c;
-}
-
-   const firebaseConfig = {
-     apiKey: "AIzaSyCyzwwPiCcUCICxv6kcx7ZlaNkMa46hcVA",
-     authDomain: "japan-football-supporters-hub.firebaseapp.com",
-     projectId: "japan-football-supporters-hub",
-     storageBucket: "japan-football-supporters-hub.firebasestorage.app",
-     messagingSenderId: "607581916231",
-     appId: "1:607581916231:web:d857fe57f315dea46db562"
-   };
-
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-
-  let map;
-  let userLocation = null;
-  let currentMarker = null;
-
-  function loadShops() {
-  db.collection("shops").get().then(snapshot => {
-    console.log("取得件数:", snapshot.size);
-
-    const bounds = new google.maps.LatLngBounds();
-
-    snapshot.forEach(doc => {
-      const shop = doc.data();
-
-      let distanceText = "";
-
-      if (userLocation) {
-        const distance = getDistance(
-          userLocation.lat,
-          userLocation.lng,
-          Number(shop.lat),
-          Number(shop.lng)
-        );
-        distanceText = "距離: " + distance.toFixed(2) + " km<br>";
-      }
-
-      const iconColor = shop.away
-        ? "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
-        : "http://maps.google.com/mapfiles/ms/icons/blue-dot.png";
-
-      const marker = new google.maps.Marker({
-        position: {
-          lat: Number(shop.lat),
-          lng: Number(shop.lng)
+          // 新しい現在地マーカー
+          currentMarker = new google.maps.Marker({
+            position: currentPos,
+            map: map,
+            title: "現在地",
+            icon: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png"
+          });
         },
-        map: map,
-        title: shop.name,
-        icon: iconColor
-      });
-
-      bounds.extend(marker.getPosition());
-
-      const googleMapLink =
-        "https://www.google.com/maps?q=" + shop.lat + "," + shop.lng;
-
-      const infoWindow = new google.maps.InfoWindow({
-        content:
-          "<strong>" + shop.name + "</strong><br>" +
-          "応援クラブ: " + shop.team + "<br>" +
-          distanceText +
-          "アウェイ歓迎: " + (shop.away ? "あり" : "なし") + "<br>" +
-          (shop.note || "") + "<br>" +
-          "<a href='" + googleMapLink + "' target='_blank'>Googleマップで開く</a>"
-      });
-
-      marker.addListener("click", () => {
-        infoWindow.open(map, marker);
-      });
-    });
-
-if (!snapshot.empty) {
-console.log("bounds:", bounds);
-  map.fitBounds(bounds);
-
-  google.maps.event.addListenerOnce(map, 'bounds_changed', function() {
-    if (map.getZoom() > 14) {
-      map.setZoom(14);
+        function () {
+          alert("位置情報の取得に失敗しました");
+        }
+      );
     }
-  });
-}
-  });
-}
-window.initMap = function () {
-  console.log("地図初期化OK");
 
-  map = new google.maps.Map(document.getElementById("map"), {
-    center: { lat: 34.7284, lng: 135.4814 },
-    zoom: 16,
-  });
+    /* ------------------------------
+       距離計算（km）
+    ------------------------------ */
+    function getDistance(lat1, lng1, lat2, lng2) {
+      const R = 6371; // km
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLng = (lng2 - lng1) * Math.PI / 180;
 
-  loadShops();
-};
-</script>
+      const a =
+        Math.sin(dLat / 2) ** 2 +
+        Math.cos(lat1 * Math.PI / 180) *
+        Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLng / 2) ** 2;
 
-<script async
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDq01peBIq6PC5ESeSG5t2CipVBUCC1WF4&callback=initMap">
-</script>
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c;
+    }
+
+    /* ------------------------------
+       Firebase 初期化
+    ------------------------------ */
+    const firebaseConfig = {
+      apiKey: "AIzaSyCyzwwPiCcUCICxv6kcx7ZlaNkMa46hcVA",
+      authDomain: "japan-football-supporters-hub.firebaseapp.com",
+      projectId: "japan-football-supporters-hub",
+      storageBucket: "japan-football-supporters-hub.firebasestorage.app",
+      messagingSenderId: "607581916231",
+      appId: "1:607581916231:web:d857fe57f315dea46db562"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    let map;
+    let userLocation = null;
+    let currentMarker = null;
+
+    /* ------------------------------
+       店舗データ読み込み
+    ------------------------------ */
+    function loadShops() {
+      db.collection("shops").get().then(snapshot => {
+        console.log("取得件数:", snapshot.size);
+
+        const bounds = new google.maps.LatLngBounds();
+
+        snapshot.forEach(doc => {
+          const shop = doc.data();
+
+          // 距離表示
+          let distanceText = "";
+          if (userLocation) {
+            const distance = getDistance(
+              userLocation.lat,
+              userLocation.lng,
+              Number(shop.lat),
+              Number(shop.lng)
+            );
+            distanceText = `距離: ${distance.toFixed(2)} km<br>`;
+          }
+
+          // マーカー色
+          const iconColor = shop.away
+            ? "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
+            : "http://maps.google.com/mapfiles/ms/icons/blue-dot.png";
+
+          // マーカー作成
+          const marker = new google.maps.Marker({
+            position: {
+              lat: Number(shop.lat),
+              lng: Number(shop.lng)
+            },
+            map: map,
+            title: shop.name,
+            icon: iconColor
+          });
+
+          bounds.extend(marker.getPosition());
+
+          // InfoWindow
+          const googleMapLink = `https://www.google.com/maps?q=${shop.lat},${shop.lng}`;
+          const infoWindow = new google.maps.InfoWindow({
+            content:
+              `<strong>${shop.name}</strong><br>` +
+              `応援クラブ: ${shop.team}<br>` +
+              distanceText +
+              `アウェイ歓迎: ${shop.away ? "あり" : "なし"}<br>` +
+              `${shop.note || ""}<br>` +
+              `<a href="${googleMapLink}" target="_blank">Googleマップで開く</a>`
+          });
+
+          marker.addListener("click", () => {
+            infoWindow.open(map, marker);
+          });
+        });
+
+        // 地図の表示範囲調整
+        if (!snapshot.empty) {
+          map.fitBounds(bounds);
+
+          google.maps.event.addListenerOnce(map, "bounds_changed", () => {
+            if (map.getZoom() > 14) {
+              map.setZoom(14);
+            }
+          });
+        }
+      });
+    }
+
+    /* ------------------------------
+       Google Map 初期化
+    ------------------------------ */
+    window.initMap = function () {
+      console.log("地図初期化OK");
+
+      map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat: 34.7284, lng: 135.4814 },
+        zoom: 16
+      });
+
+      loadShops();
+    };
+  </script>
+
+  <!-- Google Maps API -->
+  <script
+    async
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDq01peBIq6PC5ESeSG5t2CipVBUCC1WF4&callback=initMap">
+  </script>
 
 </body>
 </html>
