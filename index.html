@@ -53,7 +53,7 @@
   // =========================
 
   const firebaseConfig = {
-    apiKey: "？？？",
+    apiKey: "AIzaSyCyzwwPiCcUCICxv6kcx7ZlaNkMa46hcVA",
     authDomain: "japan-football-supporters-hub.firebaseapp.com",
     projectId: "japan-football-supporters-hub",
     storageBucket: "japan-football-supporters-hub.firebasestorage.app",
@@ -222,18 +222,14 @@
         const infoWindow = new google.maps.InfoWindow({
 
           content:
-            "<strong>" + shop.name + "</strong><br>" +
+            "<div style='font-size:16px; line-height:1.6'>" +
+            "<strong style='font-size:18px'>" + shop.name + "</strong><br>" +
             "応援クラブ: " + shop.team + "<br>" +
             distanceText +
-            "アウェイ歓迎: " +
-            (shop.away ? "あり" : "なし") +
-            "<br>" +
-            (shop.note || "") +
-            "<br>" +
-            "<a href='" +
-            googleMapLink +
-            "' target='_blank'>Googleマップで開く</a>"
-
+            "アウェイ歓迎: " + (shop.away ? "あり" : "なし") + "<br>" +
+            (shop.note || "") + "<br><br>" +
+            "<a href='" + googleMapLink + "' target='_blank'>Googleマップで開く</a>" +
+            "</div>"
         });
 
         // クリックイベント
