@@ -250,8 +250,12 @@ function loadShops(){
 
         distanceText +
 
+        "ジャンル: " +
+        (shop.genre +
+        "<br>" +
+
         "アウェイ歓迎: " +
-        (shop.away ? "あり":"なし") +
+        (shop.away ? "歓迎":"厳しい") +
         "<br>" +
 
         (shop.note || "") +
